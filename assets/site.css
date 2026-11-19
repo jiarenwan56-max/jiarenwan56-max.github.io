@@ -44,6 +44,8 @@ img, video { max-width: 100%; }
 h1, h2, h3, p, dl, dd, figure, ul { margin: 0; }
 
 .zh { font-weight: 400; color: var(--soft); }
+/* Some captions say "left" and "right"; on a phone those strips are stacked, so the wording changes. */
+.on-narrow { display: none; }
 
 .skip { position: absolute; left: -999px; top: 0; background: var(--ink); color: #fff; padding: 10px 16px; z-index: 10; }
 .skip:focus { left: 0; }
@@ -254,7 +256,8 @@ main { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter); }
   grid-template-rows: auto minmax(0, 1fr) auto;
 }
 .viewer::backdrop { background: #12171d; }
-.viewer img { grid-column: 2; grid-row: 2; place-self: center; max-width: 100%; max-height: 100%; object-fit: contain; }
+.viewer-stage { grid-column: 2; grid-row: 2; min-width: 0; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.viewer img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
 .viewer button {
   font: inherit;
   color: inherit;
@@ -272,6 +275,8 @@ main { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter); }
 /* ---- small screens: one picture per line ---- */
 @media (max-width: 719px) {
   html { font-size: 16px; }
+  .on-wide { display: none; }
+  .on-narrow { display: inline; }
   .site-head { padding-top: 20px; }
   .hero-text,
   .project-head,
@@ -284,6 +289,8 @@ main { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter); }
   .wall-row,
   .row { flex-direction: column; max-width: none; }
   .wall-row { gap: clamp(26px, 7vw, 40px); }
+  /* On a wide screen a row of covers shares one height. Stacked on a phone, they share one frame instead. */
+  .tile img { aspect-ratio: 16 / 9; object-fit: cover; }
   .tile,
   .item { flex: none; width: 100%; }
   .row { gap: 18px; }
@@ -291,13 +298,26 @@ main { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter); }
   .row.keep { flex-direction: row; gap: 10px; }
   .row.keep > .item { flex: var(--r) 1 0px; width: auto; }
   .row.keep .item img { width: 100%; max-height: none; }
+  /* Character sheets keep one scale on a phone, as they do on a wide screen.
+     figs: the drawings share one line; anything else in the row (a video) goes below.
+     same-h: too wide to share a line, so they stack, but at one height. */
+  .row.figs { flex-direction: row; flex-wrap: wrap; gap: 18px 10px; }
+  .row.figs > .item.on-paper { flex: var(--r) 1 0px; width: auto; max-width: calc(var(--r) * 70vh); }
+  .row.figs > .item:not(.on-paper) { flex: 0 0 100%; order: 1; }
+  .row.same-h > .item.on-paper { width: min(100%, calc(100% * var(--r) / var(--m)), calc(var(--r) * 70vh)); }
+  .row.figs .item img,
+  .row.same-h .item img { width: 100%; max-height: none; }
   .flow { --fs: 44vw; gap: 26px 4vw; }
   .flow .item { flex: 0 0 auto; width: calc(var(--fs) * min(var(--k), 1.9)); }
   .flow .item img { width: 100%; max-height: none; }
   .site-foot .foot-note { margin-left: 0; flex-basis: 100%; }
   .viewer[open] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto auto; }
   .viewer-close { grid-column: 2; }
-  .viewer img { grid-column: 1 / -1; grid-row: 2; }
+  /* On a phone a wide picture fitted to the screen is no bigger than it was on the page.
+     Here it fills the height instead and slides sideways. */
+  .viewer-stage { grid-column: 1 / -1; justify-content: flex-start; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; }
+  .viewer img { flex: none; width: auto; height: auto; max-width: none; margin: 0 auto; }
+  .viewer.pans .viewer-cap::after { content: "Slide sideways to see all of it."; display: block; margin-top: 2px; color: #8b96a2; }
   .viewer-prev { grid-column: 1; grid-row: 3; justify-self: start; }
   .viewer-next { grid-column: 2; grid-row: 3; justify-self: end; }
   .viewer-cap { grid-row: 4; }
