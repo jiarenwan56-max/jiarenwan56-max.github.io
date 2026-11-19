@@ -194,6 +194,8 @@ main { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter); }
   max-width: min(var(--max, 100%), calc(var(--sum, 100) * var(--h, 80vh)));
 }
 .row + .row { margin-top: calc(var(--gap) + 8px); }
+/* Presentation boards stack as a single column; they need more air between them than pictures in a set. */
+.row.board + .row.board { margin-top: clamp(40px, 6vw, 84px); }
 .item { flex: var(--r) 1 0px; min-width: 0; }
 .item img,
 .item video { display: block; width: 100%; height: auto; }
