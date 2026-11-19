@@ -258,6 +258,9 @@ main { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter); }
 .viewer::backdrop { background: #12171d; }
 .viewer-stage { grid-column: 2; grid-row: 2; min-width: 0; min-height: 0; display: flex; align-items: center; justify-content: center; }
 .viewer img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+/* A page that was opened before an update still has the picture directly inside the dialog,
+   while the browser may already have this newer stylesheet. Keep that older page laid out properly. */
+.viewer > img { grid-column: 2; grid-row: 2; place-self: center; }
 .viewer button {
   font: inherit;
   color: inherit;
@@ -317,6 +320,7 @@ main { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter); }
      Here it fills the height instead and slides sideways. */
   .viewer-stage { grid-column: 1 / -1; justify-content: flex-start; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; }
   .viewer img { flex: none; width: auto; height: auto; max-width: none; margin: 0 auto; }
+  .viewer > img { grid-column: 1 / -1; max-width: 100%; margin: 0; }
   .viewer.pans .viewer-cap::after { content: "Slide sideways to see all of it."; display: block; margin-top: 2px; color: #8b96a2; }
   .viewer-prev { grid-column: 1; grid-row: 3; justify-self: start; }
   .viewer-next { grid-column: 2; grid-row: 3; justify-self: end; }

@@ -14,7 +14,7 @@
     img.src = a.href;
     img.alt = a.querySelector('img')?.alt || '';
     cap.textContent = a.dataset.cap || '';
-    stage.scrollLeft = 0;
+    if (stage) stage.scrollLeft = 0;
     dlg.classList.remove('pans');
   };
 
@@ -27,7 +27,7 @@
     }),
   );
   // On a phone a wide picture is taller than the screen is wide: say that it slides.
-  img.addEventListener('load', () => dlg.classList.toggle('pans', stage.scrollWidth > stage.clientWidth + 8));
+  img.addEventListener('load', () => dlg.classList.toggle('pans', !!stage && stage.scrollWidth > stage.clientWidth + 8));
   dlg.querySelector('.viewer-close').addEventListener('click', () => dlg.close());
   dlg.querySelector('.viewer-prev').addEventListener('click', () => show(at - 1));
   dlg.querySelector('.viewer-next').addEventListener('click', () => show(at + 1));
